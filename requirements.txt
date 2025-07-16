@@ -34,8 +34,3 @@ faker
 
 # Async utilities
 asyncio
-
-# Standard library dependencies (no need to include in requirements.txt)
-# - os, sys, logging, json, datetime, typing, pathlib, re, time, random
-# - subprocess, threading, queue, warnings, uuid, textwrap, dataclasses
-# - importlib, functools, concurrent.futures
