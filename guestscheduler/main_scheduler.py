@@ -96,8 +96,14 @@ async def shutdown_scheduler():
     """
     Scheduler'ı düzgün şekilde kapatır.
     """
-    scheduler.shutdown(wait=False)
-    logger.info("Scheduler kapatıldı.")
+    try:
+        if scheduler.running:
+            scheduler.shutdown(wait=False)
+            logger.info("Scheduler kapatıldı.")
+        else:
+            logger.info("Scheduler zaten kapalı.")
+    except Exception as e:
+        logger.error(f"Scheduler kapatma hatası: {e}")
 
 if __name__ == "__main__":
     start_scheduler()

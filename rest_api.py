@@ -17,7 +17,7 @@ from cv_generator.generate_ats_cv import GenerateAtsCv
 from guestscheduler.main_scheduler import scheduler, start_scheduler, shutdown_scheduler
 
 # APScheduler durumu sabiti
-from apscheduler.schedulers.base import STATE_RUNNING  # ← EKLENDİ
+from apscheduler.schedulers.base import STATE_RUNNING
 
 # Pydantic request modeli
 class GenerateCvRequest(BaseModel):
@@ -25,22 +25,27 @@ class GenerateCvRequest(BaseModel):
     job_id: int
     target_lang: Literal["TR", "EN"]
 
-app = FastAPI()
-
-# Logger konfigürasyonu
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+class StartCommand(BaseModel):
+    command: str
 
 app = FastAPI()
 
 # Logger konfigürasyonu
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+@app.get("/")
+async def root():
+    return {"message": "CV Maker API çalışıyor", "status": "active"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 @app.post("/generate-cv")
 async def generate_cv(req: GenerateCvRequest):
     try:
-        # Eğer GenerateAtsCv sync ise executor’da çalıştır
+        # Eğer GenerateAtsCv sync ise executor'da çalıştır
         if not asyncio.iscoroutinefunction(GenerateAtsCv):
             loop = asyncio.get_event_loop()
             latex_cv = await loop.run_in_executor(
@@ -91,22 +96,6 @@ async def generate_latex_raw(req: GenerateCvRequest) -> PlainTextResponse:
             detail="Sunucu hatası, lütfen daha sonra tekrar deneyin."
         )
 
-@app.on_event("startup")
-async def on_startup():
-    logger.info("on_startup tetiklendi — scheduler otomatik başlatma kaldırıldı")
-
-# Scheduler shutdown event
-@app.on_event("shutdown")
-async def on_shutdown():
-    await shutdown_scheduler()
-    logger.info("Scheduler düzgün şekilde kapatıldı (shutdown event içinde).")
-
-from pydantic import BaseModel
-from fastapi import HTTPException
-
-class StartCommand(BaseModel):
-    command: str
-
 async def trigger_all_jobs():
     jobs = scheduler.get_jobs()
     for job in jobs:
@@ -138,6 +127,32 @@ async def start_system(cmd: StartCommand):
     await trigger_all_jobs()
 
     return {"status": "scheduler started and all jobs triggered"}
+
+@app.get("/scheduler/status")
+async def get_scheduler_status():
+    return {
+        "state": scheduler.state,
+        "running": scheduler.running,
+        "job_count": len(scheduler.get_jobs()),
+        "jobs": [
+            {
+                "id": job.id,
+                "name": job.name,
+                "next_run_time": job.next_run_time.isoformat() if job.next_run_time else None,
+                "trigger": str(job.trigger)
+            }
+            for job in scheduler.get_jobs()
+        ]
+    }
+
+# Scheduler shutdown event
+@app.on_event("shutdown")
+async def on_shutdown():
+    try:
+        await shutdown_scheduler()
+        logger.info("Scheduler düzgün şekilde kapatıldı (shutdown event içinde).")
+    except Exception as e:
+        logger.error(f"Scheduler kapatma hatası: {e}")
 
 if __name__ == "__main__":
     uvicorn.run(
