@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section*{İletişim Bilgileri}
+Muhammet Zeren \\
+muhammet.zern@gmail.com \\
++90 5315077810 \\
+linkedin.com/in/muhammet-zeren \\
+Istanbul, Turkey
+
+\section*{Özet}
+C\# ve .NET Core uzmanı olarak, RESTful API geliştirme ve tam yığın web uygulamaları alanında deneyimli bir Junior Yazılım Mühendisi. Mobil ve gömülü sistemler geliştirme, API test otomasyonu ve backend performans iyileştirme konularında kanıtlanmış deneyime sahip. Agile metodolojilerinde uzman ve yüksek kaliteli, üretim hazırlığına uygun yazılım teslim etme konusunda başarılı.
+
+\section*{Yetenekler}
+\begin{itemize}[leftmargin=*]
+    \item Programlama Dilleri: C\#, Java, JavaScript, TypeScript, HTML5, CSS3, Gömülü C
+    \item Çerçeveler: .NET Core, ASP.NET MVC, Spring Boot, Tailwind CSS, Bootstrap
+    \item Veritabanları: SQL Server, PostgreSQL, MongoDB, Neo4j, MSSQL, MySQL
+    \item Araçlar: Git, Visual Studio, Docker, Node.js, Jenkins, Jira
+    \item Kavramlar: RESTful API Tasarımı, OOP, Birim Testi, CI/CD, Agile Geliştirme
+\end{itemize}
+
+\section*{Çalışma Deneyimi}
+\textbf{Yazılım Mühendisi Stajyer / Yarı Zamanlı} \\
+Beyes, Ankara, Turkey \\
+Ekim 2024 – Temmuz 2025
+\begin{itemize}[leftmargin=*]
+    \item C\# ve .NET Core kullanarak kurumsal düzeyde backend sistemler için üretim hazırlığına uygun RESTful API'ler tasarladım ve geliştirdim.
+    \item ASP.NET MVC, Tailwind CSS ve JavaScript kullanarak birden fazla duyarlı tam yığın web uygulaması geliştirdim.
+    \item Android mobil uygulamaları (Java/Kotlin) geliştirdim ve gömülü sistemler programlamasına katkı sağladım (C).
+    \item Redis önbelleği ve veritabanı sorgu optimizasyonu ile backend performansını iyileştirdim.
+    \item Agile sprintlerinde aktif bir katılımcı olarak ölçeklenebilir çözümler teslim ettim.
+\end{itemize}
+
+\textbf{Test Otomasyonu Mühendisi Stajyer} \\
+Jotform, Uzaktan \\
+Ağustos 2024 – Eylül 2024
+\begin{itemize}[leftmargin=*]
+    \item Web API doğrulama için Node.js ve TypeScript kullanarak API test otomasyonu betikleri geliştirdim.
+    \item Pozitif ve negatif test senaryoları tasarladım ve uçtan uca sistem testleri gerçekleştirdim.
+    \item Otomatik testleri CI/CD borularına entegre ederek dağıtım süresini azalttım.
+\end{itemize}
+
+\textbf{Yazılım Stajyeri} \\
+AKTASOFT, Trabzon, Turkey \\
+Ağustos 2023 – Eylül 2023
+\begin{itemize}[leftmargin=*]
+    \item ASP.NET MVC kullanarak backend ve frontend geliştirmeye katkı sağladım.
+    \item SQL Server tabanlı veri yönetim süreçlerini uyguladım ve optimize ettim.
+\end{itemize}
+
+\textbf{Yazılım Stajyeri} \\
+T-Soft E-Commerce Solutions, Istanbul, Turkey \\
+Eylül 2018 – Haziran 2019
+\begin{itemize}[leftmargin=*]
+    \item HTML5, CSS3 ve Bootstrap kullanarak e-ticaret ön uçlarını geliştirdim ve bakımını yaptım.
+\end{itemize}
+
+\section*{Eğitim}
+\textbf{Karadeniz Teknik Üniversitesi} \\
+Trabzon, Turkey \\
+Yazılım Mühendisliği Lisansı \\
+2021 – 2025 (Mezun)
+
+\end{document}

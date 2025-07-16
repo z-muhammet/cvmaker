@@ -1,0 +1,41 @@
+# Core dependencies
+fastapi
+uvicorn
+pydantic
+
+# Database
+motor
+pymongo
+
+# HTTP and networking
+aiohttp
+requests
+websockets
+
+# Web scraping and automation
+playwright
+beautifulsoup4
+fake-useragent
+
+# Scheduler
+apscheduler
+
+# Environment and configuration
+python-dotenv
+
+# Monitoring and metrics
+prometheus-client
+
+# Web framework (for performance monitor)
+flask
+
+# Data generation
+faker
+
+# Async utilities
+asyncio
+
+# Standard library dependencies (no need to include in requirements.txt)
+# - os, sys, logging, json, datetime, typing, pathlib, re, time, random
+# - subprocess, threading, queue, warnings, uuid, textwrap, dataclasses
+# - importlib, functools, concurrent.futures
