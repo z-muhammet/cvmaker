@@ -310,30 +310,36 @@ async def MainWithInfiniteRetry( ) -> dict[str, str]:
       if any( kw in errMsg for kw in prxErrKw ):
         logging.info( f"[{attempt}. deneme] Proxy hatası tespit edildi, yeni proxy deneniyor..." )
         try:
-          prx = await GetAndDeleteSLinkedinProxy( )
-          if prx:
-            logging.info( f"Yeni proxy test ediliyor: {prx}" )
-            if await TestProxyWithTheirStack( prx ):
-              os.environ[ "HTTP_PROXY" ] = prx
-              logging.info( f"Yeni proxy başarılı ve ayarlandı: {prx}" )
-            else:
-              logging.warning( f"Yeni proxy test başarısız: {prx}" )
-          else:
-            logging.warning( "Denenecek başka proxy yok, proxy olmadan devam ediliyor." )
-            if( "HTTP_PROXY" in os.environ ):
-              del os.environ[ "HTTP_PROXY" ]
-        except Exception as dbErr:
-          logging.error( f"Proxy alma hatası: {dbErr}" )
-          logging.warning( "Proxy olmadan çalıştırılıyor." )
-          if( "HTTP_PROXY" in os.environ ):
-            del os.environ[ "HTTP_PROXY" ]
-      else:
-        logging.info( f"[{attempt}. deneme] Proxy dışı hata, aynı ayarlarla tekrar deneniyor..." )
-      
-      # Her denemeden sonra bekle
-      wait_time = min(60, attempt * 3)  # 3, 6, 9, 12... 60 saniye bekle
-      logging.info( f"[{attempt}. deneme] {wait_time} saniye bekleniyor...")
-      await asyncio.sleep(wait_time)
+            logging.info(f"[{attempt}. deneme] Scraping başlatılıyor...")
+            return await Main()
+        except Exception as e:
+            logging.warning(f"[{attempt}. deneme] Hata tespit edildi: {e}")
+
+            # HER HATADA PROXY DEĞİŞ
+            try:
+                prx = await GetAndDeleteSLinkedinProxy()
+                if prx:
+                    logging.info(f"Yeni proxy test ediliyor: {prx}")
+                    if await TestProxyWithTheirStack(prx):
+                        os.environ["HTTP_PROXY"] = prx
+                        logging.info(f"Yeni proxy başarılı ve ayarlandı: {prx}")
+                    else:
+                        logging.warning(f"Yeni proxy test başarısız: {prx}")
+                        if "HTTP_PROXY" in os.environ:
+                            del os.environ["HTTP_PROXY"]
+                else:
+                    logging.warning("Denenecek başka proxy yok, proxy olmadan devam ediliyor.")
+                    if "HTTP_PROXY" in os.environ:
+                        del os.environ["HTTP_PROXY"]
+            except Exception as dbErr:
+                logging.error(f"Proxy alma hatası: {dbErr}")
+                logging.warning("Proxy olmadan çalıştırılıyor.")
+                if "HTTP_PROXY" in os.environ:
+                    del os.environ["HTTP_PROXY"]
+
+            wait_time = min(60, attempt * 3)  # 3, 6, 9, ... max 60 sn bekle
+            logging.info(f"[{attempt}. deneme] {wait_time} saniye bekleniyor...")
+            await asyncio.sleep(wait_time)
 
 async def MainWithProxyRetry( ) -> dict[str, str]:
   for att in range( 1, MAX_PROXY_ATTEMPTS + 1 ):

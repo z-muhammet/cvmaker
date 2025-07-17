@@ -10,16 +10,12 @@ from typing import Literal
 import uvicorn
 import importlib
 
-# CV generator (sync veya async olabilir)
 from cv_generator.generate_ats_cv import GenerateAtsCv
 
-# Scheduler tek bir import: hem scheduler objesini hem de helper fonksiyonları alıyoruz
 from guestscheduler.main_scheduler import scheduler, start_scheduler, shutdown_scheduler
 
-# APScheduler durumu sabiti
 from apscheduler.schedulers.base import STATE_RUNNING
 
-# Pydantic request modeli
 class GenerateCvRequest(BaseModel):
     raw_cv: str
     job_id: int
@@ -45,7 +41,6 @@ async def health_check():
 @app.post("/generate-cv")
 async def generate_cv(req: GenerateCvRequest):
     try:
-        # Eğer GenerateAtsCv sync ise executor'da çalıştır
         if not asyncio.iscoroutinefunction(GenerateAtsCv):
             loop = asyncio.get_event_loop()
             latex_cv = await loop.run_in_executor(
@@ -55,11 +50,9 @@ async def generate_cv(req: GenerateCvRequest):
             latex_cv = await GenerateAtsCv(req.raw_cv, req.job_id, req.target_lang)
         return {"latex_cv": latex_cv}
     except ValueError as ve:
-        # İş mantığı hatası → 400
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as exc:
         logger.exception("CV oluşturulurken beklenmeyen hata")
-        # Sunucu hatası → 500
         raise HTTPException(status_code=500, detail="Sunucu hatası, lütfen daha sonra tekrar deneyin.")
 
 @app.post(
@@ -86,11 +79,9 @@ async def generate_latex_raw(req: GenerateCvRequest) -> PlainTextResponse:
             )
         return PlainTextResponse(content=latex, media_type="text/plain")
     except ValueError as ve:
-        # Mantıksal hata → 400
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as exc:
         logger.exception("LaTeX ham üretimi sırasında beklenmeyen hata")
-        # Sunucu hatası → 500
         raise HTTPException(
             status_code=500,
             detail="Sunucu hatası, lütfen daha sonra tekrar deneyin."
@@ -123,7 +114,6 @@ async def start_system(cmd: StartCommand):
     start_scheduler()
     logger.info("Scheduler '/start' endpoint ile asenkron başlatıldı.")
 
-    # Tüm işleri anında tetikle
     await trigger_all_jobs()
 
     return {"status": "scheduler started and all jobs triggered"}
@@ -145,7 +135,6 @@ async def get_scheduler_status():
         ]
     }
 
-# Scheduler shutdown event
 @app.on_event("shutdown")
 async def on_shutdown():
     try:
