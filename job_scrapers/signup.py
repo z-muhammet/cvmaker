@@ -290,25 +290,12 @@ async def Main( ) -> dict[str, str]:
 
 
 async def MainWithInfiniteRetry( ) -> dict[str, str]:
-  """
-  Sonsuz retry ile çalışan versiyon. Sadece başarılı olunca durur.
-  """
-  attempt = 0
-  while True:
-    attempt += 1
-    try:
-      logging.info( f"[{attempt}. deneme] Scraping başlatılıyor..." )
-      return await Main( )
-    except Exception as e:
-      errMsg = str( e ).lower( )
-      prxErrKw = [ 'timeout', 'connection', 'tunnel', 'proxy', 'network', 'net::err_connection_refused', 'net::err_connection_timed_out', 'net::err_connection_reset', 'net::err_connection_aborted', 'net::err_name_not_resolved', 'net::err_address_unreachable', 'page.goto: timeout', 'navigation timeout', 'timeout 20000ms exceeded', 'timeout 60000ms exceeded', 'timeout exceeded', 'net::err_connection_closed' ]
-      
-      # Her türlü hatada retry yap
-      logging.warning( f"[{attempt}. deneme] Hata tespit edildi: {e}" )
-      
-      # Proxy hatası ise yeni proxy dene
-      if any( kw in errMsg for kw in prxErrKw ):
-        logging.info( f"[{attempt}. deneme] Proxy hatası tespit edildi, yeni proxy deneniyor..." )
+    """
+    Sonsuz retry ile çalışan versiyon. Her hatada proxy değiştirir.
+    """
+    attempt = 0
+    while True:
+        attempt += 1
         try:
             logging.info(f"[{attempt}. deneme] Scraping başlatılıyor...")
             return await Main()
